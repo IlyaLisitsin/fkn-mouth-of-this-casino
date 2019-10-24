@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha 'tests/*.js'"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,12 @@
   },
   "homepage": "https://github.com/IlyaLisitsin/fkn-mouth-of-this-casino#readme",
   "dependencies": {
-    "solc": "^0.4.25"
+    "@truffle/hdwallet-provider": "^1.0.22",
+    "ganache-cli": "^6.7.0",
+    "mocha": "^6.2.2",
+    "nodemon": "^1.19.4",
+    "solc": "^0.4.25",
+    "truffle-hdwallet-provider": "0.0.3",
+    "web3": "^1.0.0-beta.36"
   }
 }
