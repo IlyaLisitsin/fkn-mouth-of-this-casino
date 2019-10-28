@@ -16,8 +16,8 @@ const deploy = async () => {
     console.log('account', accounts[0]);
 
     const result = await new web3.eth.Contract(JSON.parse(compileInterface))
-        .deploy({ data: bytecode, arguments: ['Yaaaa'] })
-        .send({ gas: '1000000', from: accounts[0] });
+        .deploy({ data: bytecode })
+        .send({ gas: '1000000', from: accounts[0], value: '1000000' });
 
     console.log('address', result.options.address)
 };
