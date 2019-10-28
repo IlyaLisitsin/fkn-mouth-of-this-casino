@@ -27,21 +27,7 @@ describe('lottery', () => {
         assert.ok(lottery.options.address);
     });
 
-    it('allowa one account to enter', async () => {
-        await lottery.methods.enter().send({
-            from: accounts[0],
-            value: web3.utils.toWei('10', 'ether'),
-        });
-
-        const players = await lottery.methods.getPlayers().call({
-            from: accounts[0],
-        });
-
-        assert.equal(accounts[0], players[0]);
-        assert.equal(players.length, 1);
-    });
-
-    it('allowa mult acccounts', async () => {
+    it('allow <= 2 acccounts to enter', async () => {
         await lottery.methods.enter().send({
             from: accounts[0],
             value: web3.utils.toWei('10', 'ether'),
@@ -58,6 +44,11 @@ describe('lottery', () => {
 
         assert.equal(accounts[0], players[0]);
         assert.equal(accounts[1], players[1]);
+
+        await expect(lottery.methods.enter().send({
+            from: accounts[2],
+            value: web3.utils.toWei('10', 'ether'),
+        })).to.be.rejectedWith(Error);
 
         assert.equal(players.length, 2);
     });
@@ -86,26 +77,14 @@ describe('lottery', () => {
             value: web3.utils.toWei('10', 'ether'),
         });
 
-        const players = await lottery.methods.getPlayers().call({
-            from: accounts[0],
-        });
-
-        const winnerIndex = await lottery.methods.pickWinner().call({
-            from: players[0]
-        });
-
-        expect(players[winnerIndex]).not.to.be.undefined;
-
-        const shouldThrow = async () => {
-            await lottery.methods.pickWinner().send({
-                from: accounts[1]
-            });
-        }
-
         await expect(lottery.methods.pickWinner().send({
             from: accounts[1]
         })).to.be.rejectedWith(Error);
-    })
+
+        await expect(lottery.methods.pickWinner().send({
+            from: accounts[0]
+        })).to.be.fulfilled;
+    });
 
     it('sends money to the winner and resets the arr', async () => {
         await lottery.methods.enter().send({
@@ -121,6 +100,11 @@ describe('lottery', () => {
 
         const finBallance = await web3.eth.getBalance(accounts[0]);
 
-        assert((finBallance - initBallance) > web3.utils.toWei('9.8', 'ether'))
+        const players = await lottery.methods.getPlayers().call({
+            from: accounts[0],
+        });
+
+        assert((finBallance - initBallance) > web3.utils.toWei('9.8', 'ether'));
+        assert.equal(players.length, 0);
     });
 });
