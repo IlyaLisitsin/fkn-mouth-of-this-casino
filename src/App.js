@@ -18,48 +18,90 @@ function App() {
     const [manager, setManager] = useState(null);
     const [players, setPlayers] = useState([]);
     const [balance, setBalance] = useState(0);
+    const [betValue, setSetBetValue] = useState(0);
+    const [message, setMessage] = useState('');
+
+    const getPlayers = async () => {
+        const players = await lottery.methods.getPlayers().call();
+        setPlayers(players);
+
+    };
+
+    const getBalance = async () => {
+        const balance = await web3.eth.getBalance(lottery.options.address);
+        setBalance(balance);
+    };
 
     useEffect(() => {
-
-        console.log('her')
         checkMetamask()
             .then(() => setData(true))
             .catch(() => setData(false));
 
+
         async function init() {
             const manager = await lottery.methods.manager().call();
-            const players = await lottery.methods.getPlayers().call();
-            const balance = await web3.eth.getBalance(lottery.options.address);
+            getPlayers();
+            getBalance();
 
             setManager(manager);
-            setPlayers(players);
-            setBalance(balance);
         }
 
         init();
 
     }, []);
+
+    const handleInputChange = e => {
+        e.preventDefault();
+        setSetBetValue(e.target.value);
+    };
+
+    const submitClick = async () => {
+        const accounts = await web3.eth.getAccounts();
+
+        setMessage('Entering you');
+        await lottery.methods.enter().send({
+            from: accounts[0],
+            value: betValue * 1000000000000000000,
+        }).catch(() => alert('Transaction was declined'));
+
+        getPlayers();
+
+        setMessage('');
+    };
+
+    const pickWinner = async () => {
+        setMessage('Picking the winner');
+
+        await lottery.methods.pickWinner().send({
+            from: manager,
+        });
+
+        getPlayers();
+        getBalance();
+    };
+
     return (
-        isMetaMaskEnabled ?
-        <div className="App">
-            <div>Managed by {manager}</div>
-            <div>Balance: {web3.utils.fromWei(String(balance), 'ether')} eth</div>
-            <ul>{players.map(player => <li>{player}</li>)}</ul>
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                    Edit <code>src/App.js</code> and save to reload.
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
-            </header>
-        </div> : <p>Sas</p>
+
+            <section className="container">
+                {
+                    isMetaMaskEnabled ?
+                        <div className="main-menu">
+                            {message && <p className="message">{message}</p>}
+                            <div>Managed by {manager}</div>
+                            <div>Balance: {web3.utils.fromWei(String(balance), 'ether')} eth</div>
+                            <div className="players-list">
+                                <p>Players list:</p>
+                                <ul>{players.map(player => <li key={player}>{player}</li>)}</ul>
+                            </div>
+                            <div className="bet-menu">
+                                <h4>Your bet</h4>
+                                <input onChange={handleInputChange} value={betValue}/>
+                                <button onClick={submitClick}>I'm lucky</button>
+                                <button onClick={pickWinner}>Pick winner</button>
+                            </div>
+                        </div> : <p>Install MetaMask and allow interaction</p>
+                }
+            </section>
     );
 }
 

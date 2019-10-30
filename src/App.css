@@ -1,12 +1,4 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-}
-
-.App-header {
+.container {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -15,8 +7,58 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  text-align: center;
 }
 
-.App-link {
-  color: #09d3ac;
+
+input, button {
+  border: 1px solid #09d3ac;
+  background-color: #282c34;
+  color: #fff;
+}
+
+button {
+  position: relative;
+  left: -1px;
+  cursor: pointer;
+}
+
+.players-list {
+  margin-top: 40px;
+  font-size: 12px;
+  text-align: left;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+li {
+  margin: 0;
+  border: 1px solid #fff;
+  padding: 2px 4px;
+}
+
+p {
+  padding: 0;
+  margin: 0;
+  margin-bottom: 2px;
+}
+
+.bet-menu {
+  text-align: left;
+  font-size: 12px;
+  margin-top: 20px;
+}
+
+h4 {
+  margin: 0;
+  font-weight: normal;
+}
+
+.message {
+  color: red;
+  text-align: left;
 }
