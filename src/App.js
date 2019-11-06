@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import BetsList from './bets-list';
+import CreateBet from './create-bet';
 
-import web3 from './web3';
-import lottery from  './lottery';
+import './App.css';
 
 function checkMetamask() {
     if (window.ethereum) {
@@ -15,70 +14,32 @@ function checkMetamask() {
 
 function App() {
     const [isMetaMaskEnabled, setData] = useState(false);
-    const [manager, setManager] = useState(null);
-    const [players, setPlayers] = useState([]);
-    const [balance, setBalance] = useState(0);
-    const [betValue, setSetBetValue] = useState(0);
-    const [message, setMessage] = useState('');
+    const [betsList, setbetsList] = useState([]);
+    const [isLoading, setLoading] = useState(false);
+    const [ws, setWs] = useState(null);
 
-    const getPlayers = async () => {
-        const players = await lottery.methods.getPlayers().call();
-        setPlayers(players);
+    useEffect(() => {
+        const w = new WebSocket('ws://127.0.0.1:5500');
 
-    };
+        w.onopen = function(event) {
+            setLoading(true);
+            w.send(JSON.stringify({ event: 'get-all-bets' }))
+        };
 
-    const getBalance = async () => {
-        const balance = await web3.eth.getBalance(lottery.options.address);
-        setBalance(balance);
-    };
+        w.onmessage = function(event) {
+            setbetsList(JSON.parse(event.data));
+            setLoading(false);
+        };
+
+        setWs(w);
+    }, []);
 
     useEffect(() => {
         checkMetamask()
             .then(() => setData(true))
             .catch(() => setData(false));
 
-
-        async function init() {
-            const manager = await lottery.methods.manager().call();
-            getPlayers();
-            getBalance();
-
-            setManager(manager);
-        }
-
-        init();
-
     }, []);
-
-    const handleInputChange = e => {
-        e.preventDefault();
-        setSetBetValue(e.target.value);
-    };
-
-    const submitClick = async () => {
-        const accounts = await web3.eth.getAccounts();
-
-        setMessage('Entering you');
-        await lottery.methods.enter().send({
-            from: accounts[0],
-            value: betValue * 1000000000000000000,
-        }).catch(() => alert('Transaction was declined'));
-
-        getPlayers();
-
-        setMessage('');
-    };
-
-    const pickWinner = async () => {
-        setMessage('Picking the winner');
-
-        await lottery.methods.pickWinner().send({
-            from: manager,
-        });
-
-        getPlayers();
-        getBalance();
-    };
 
     return (
 
@@ -86,19 +47,8 @@ function App() {
                 {
                     isMetaMaskEnabled ?
                         <div className="main-menu">
-                            {message && <p className="message">{message}</p>}
-                            <div>Managed by {manager}</div>
-                            <div>Balance: {web3.utils.fromWei(String(balance), 'ether')} eth</div>
-                            <div className="players-list">
-                                <p>Players list:</p>
-                                <ul>{players.map(player => <li key={player}>{player}</li>)}</ul>
-                            </div>
-                            <div className="bet-menu">
-                                <h4>Your bet</h4>
-                                <input onChange={handleInputChange} value={betValue}/>
-                                <button onClick={submitClick}>I'm lucky</button>
-                                <button onClick={pickWinner}>Pick winner</button>
-                            </div>
+                            <CreateBet ws={ws}/>
+                            { isLoading ? <div>loading bets list</div> : <BetsList betsList={betsList} ws={ws}/> }
                         </div> : <p>Install MetaMask and allow interaction</p>
                 }
             </section>
