@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import BetsList from './bets-list';
 import CreateBet from './create-bet';
+import ErrorMessage from './error-message'
 
 import './App.css';
 
@@ -16,6 +17,7 @@ function App() {
     const [isMetaMaskEnabled, setData] = useState(false);
     const [betsList, setbetsList] = useState([]);
     const [isLoading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [ws, setWs] = useState(null);
 
     useEffect(() => {
@@ -29,6 +31,10 @@ function App() {
         w.onmessage = function(event) {
             setbetsList(JSON.parse(event.data));
             setLoading(false);
+        };
+
+        w.onclose = function() {
+            setErrorMessage('Connection lost :( Try to reload page')
         };
 
         setWs(w);
@@ -49,6 +55,7 @@ function App() {
                         <div className="main-menu">
                             <CreateBet ws={ws}/>
                             { isLoading ? <div>loading bets list</div> : <BetsList betsList={betsList} ws={ws}/> }
+                            { errorMessage && <ErrorMessage message={errorMessage} />}
                         </div> : <p>Install MetaMask and allow interaction</p>
                 }
             </section>

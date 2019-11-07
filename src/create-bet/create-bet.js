@@ -14,6 +14,8 @@ function CreateBet({ ws }) {
     const createBet = async () => {
         const accounts = await web3.eth.getAccounts();
 
+        console.log('CREATE BET')
+
         setloading(true);
         await BetFactory.methods.createBetContract().send({
             from: accounts[0],
@@ -21,6 +23,8 @@ function CreateBet({ ws }) {
         });
 
         const betAddress = await BetFactory.methods.betInstanceAddress().call();
+
+        console.log(234, betAddress)
 
         ws.send(JSON.stringify({
             data: {
@@ -38,8 +42,8 @@ function CreateBet({ ws }) {
     return (
         <div className="create-bet">
             { isLoading && <div>Creationg your bet</div> }
-            <button onClick={createBet}>create bet</button>
-            <input onChange={changeBetValue}></input>
+            <button disabled={isLoading} onClick={createBet}>create bet</button>
+            <input disabled={isLoading} onChange={changeBetValue}></input>
         </div>
     )
 }

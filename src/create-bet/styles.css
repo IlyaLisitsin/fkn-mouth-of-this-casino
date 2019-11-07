@@ -1,0 +1,7 @@
+button[disabled] {
+    border-color: grey;
+}
+
+input[disabled] {
+    border-color: grey;
+}
