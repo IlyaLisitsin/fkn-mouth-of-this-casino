@@ -3,6 +3,8 @@ import BetFactory from './contracts-build/BetFactory';
 
 let instance;
 
+console.log('web3', web3)
+
 if (web3) {
     new web3.eth.Contract(
         JSON.parse(BetFactory.interface),
