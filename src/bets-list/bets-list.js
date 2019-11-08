@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import TakeBetButton from '../take-bet-button';
 
 import './styles.css'
 
 function BetsList({ betsList, ws }) {
-    console.log('PLAYERS LIST', betsList)
-
     return (
         <div className="players-list">
             <ul>{betsList.map(bet =>

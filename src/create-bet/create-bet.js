@@ -14,8 +14,6 @@ function CreateBet({ ws }) {
     const createBet = async () => {
         const accounts = await web3.eth.getAccounts();
 
-        console.log('CREATE BET')
-
         setloading(true);
         await BetFactory.methods.createBetContract().send({
             from: accounts[0],

@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - "9"
+cache:
+  directories:
+    - node_modules
+script:
+  - npm install web3@1.0.0-beta.35 --save --save-exact --unsafe-perm=true
+  - npm run build
+deploy:
+  provider: surge
+  skip_cleanup: true
+  domain: fuckingmouthofthiscasino.surge.sh
+  project: ./build/
+on:
+  branch: master

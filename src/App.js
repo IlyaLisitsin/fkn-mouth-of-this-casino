@@ -15,16 +15,20 @@ function checkMetamask() {
 
 function App() {
     const [isMetaMaskEnabled, setData] = useState(false);
-    const [betsList, setbetsList] = useState([]);
+    const [isConnected, setIsConnected] = useState(false);
     const [isLoading, setLoading] = useState(false);
+    const [betsList, setbetsList] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
     const [ws, setWs] = useState(null);
 
     useEffect(() => {
-        const w = new WebSocket('ws://127.0.0.1:5500');
+        // const w = new WebSocket('ws://127.0.0.1:5500');
+        const w = new WebSocket('ws://lottery-be.herokuapp.com');
+        setIsConnected(false);
 
         w.onopen = function(event) {
             setLoading(true);
+            setIsConnected(true);
             w.send(JSON.stringify({ event: 'get-all-bets' }))
         };
 
@@ -53,7 +57,7 @@ function App() {
                 {
                     isMetaMaskEnabled ?
                         <div className="main-menu">
-                            <CreateBet ws={ws}/>
+                            { isConnected ? <CreateBet ws={ws} /> : <div>Connection attempt</div> }
                             { isLoading ? <div>loading bets list</div> : <BetsList betsList={betsList} ws={ws}/> }
                             { errorMessage && <ErrorMessage message={errorMessage} />}
                         </div> : <p>Install MetaMask and allow interaction</p>
