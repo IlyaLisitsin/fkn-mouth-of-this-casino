@@ -1,0 +1,25 @@
+ul {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 0);
+}
+
+li {
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+li:hover {
+    cursor: pointer;
+    border-color: #09d3ac;
+    transition: all .1s;
+}
+
+.list-container {
+    display: flex;
+    justify-content: center;
+}

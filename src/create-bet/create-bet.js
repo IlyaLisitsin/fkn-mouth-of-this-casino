@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import web3 from '../web3'
+import web3 from '../web3';
+import Range from '../range';
 
-import BetFactory from '../bet-factory-instance'
+import BetFactory from '../bet-factory-instance';
 
-import './styles.css'
+import './styles.css';
 
 function CreateBet({ ws }) {
     const [betValue, setBetValue] = useState(0);
     const [isLoading, setloading] = useState(false);
-    const changeBetValue = e => setBetValue(e.target.value);
+    const changeBetValue = e => {
+        if (typeof e === 'object') setBetValue(e.target.value);
+        else if (typeof e === 'number') setBetValue(e);
+    };
 
 
     const createBet = async () => {
@@ -21,8 +25,6 @@ function CreateBet({ ws }) {
         });
 
         const betAddress = await BetFactory.methods.betInstanceAddress().call();
-
-        console.log(234, betAddress)
 
         ws.send(JSON.stringify({
             data: {
@@ -40,8 +42,11 @@ function CreateBet({ ws }) {
     return (
         <div className="create-bet">
             { isLoading && <div>Creationg your bet</div> }
-            <button disabled={isLoading} onClick={createBet}>create bet</button>
-            <input disabled={isLoading} onChange={changeBetValue}></input>
+            <Range changeBetValue={changeBetValue}/>
+            <div className="create-bet-input">
+                <button disabled={isLoading} onClick={createBet}>create bet</button>
+                <input disabled={isLoading} onChange={changeBetValue} value={betValue}/>
+            </div>
         </div>
     )
 }

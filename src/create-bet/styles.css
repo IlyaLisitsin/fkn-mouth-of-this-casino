@@ -5,3 +5,7 @@ button[disabled] {
 input[disabled] {
     border-color: grey;
 }
+
+.create-bet-input {
+    margin-top: 20px;
+}
