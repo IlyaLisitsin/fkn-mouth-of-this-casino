@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import TakeBetButton from '../take-bet-button';
+import React  from 'react';
 
 import './styles.css';
 import web3 from "../web3";
 import BetFactory from "../contracts-build/Bet";
 
 function BetsList({ betsList, ws }) {
-    const [isLoading, setloading] = useState(false);
+    // const [isLoading, setloading] = useState(false);
 
     const takeBetClick = async ({ betAddress, betId, betValue }) => {
         const bet = new web3.eth.Contract(
@@ -16,7 +15,7 @@ function BetsList({ betsList, ws }) {
 
         const accounts = await web3.eth.getAccounts();
 
-        setloading(true);
+        // setloading(true);
         bet.methods.enter().send({
             from: accounts[0],
             value: betValue,
@@ -27,9 +26,9 @@ function BetsList({ betsList, ws }) {
                     data: { betId }
                 }));
 
-                setloading(false);
+                // setloading(false);
             })
-            .catch(() => setloading(false));
+            // .catch(() => setloading(false));
     };
 
     return (
