@@ -11,12 +11,13 @@ li {
     justify-content: center;
     display: flex;
     align-items: center;
+    transition: all .5s;
 }
 
 li:hover {
     cursor: pointer;
     border-color: #09d3ac;
-    transition: all .1s;
+    transition: all .5s;
 }
 
 .list-container {

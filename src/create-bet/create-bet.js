@@ -41,7 +41,7 @@ function CreateBet({ ws }) {
 
     return (
         <div className="create-bet">
-            { isLoading && <div>Creationg your bet</div> }
+            { isLoading && <div>Creating your bet</div> }
             <Range changeBetValue={changeBetValue}/>
             <div className="create-bet-input">
                 <button disabled={isLoading} onClick={createBet}>create bet</button>
